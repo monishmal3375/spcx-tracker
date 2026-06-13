@@ -1,10 +1,12 @@
 name: SPCX Tracker
+
 on:
   schedule:
-    - cron: "0 12 * * *"
-    - cron: "0 22 * * *"
-    - cron: "30 * * * *"
-  workflow_dispatch:
+    - cron: "0 12 * * *"      # 08:00 America/New_York (EDT) - morning brief
+    - cron: "0 22 * * *"      # 18:00 America/New_York (EDT) - evening analysis
+    - cron: "*/5 * * * *"     # every 5 min (GitHub minimum) - $80 target check
+  workflow_dispatch:          # manual "Run workflow" button (sends a morning email as a test)
+
 jobs:
   run:
     runs-on: ubuntu-latest
@@ -23,6 +25,6 @@ jobs:
           case "${{ github.event.schedule }}" in
             "0 12 * * *") python run.py morning ;;
             "0 22 * * *") python run.py evening ;;
-            "30 * * * *") python run.py check ;;
+            "*/5 * * * *") python run.py check ;;
             *) python run.py morning ;;
           esac
